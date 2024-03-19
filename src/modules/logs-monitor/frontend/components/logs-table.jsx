@@ -4,19 +4,20 @@ import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, User, C
 import { FaEdit, FaRemoveFormat, FaEye } from "react-icons/fa";
 
 const columns = [
-  {name: "NAME", uid: "name"},
-  {name: "ROLE", uid: "role"},
-  {name: "STATUS", uid: "status"},
+  {name: "Agente", uid: "name"},
+  {name: "Order reference", uid: "role"},
+  {name: "Customer reference", uid: "role"},
+  {name: "Level", uid: "level"},
   {name: "ACTIONS", uid: "actions"},
 ];
 
-const users = [
+const logs = [
   {
     id: 1,
     name: "Tony Reichert",
     role: "CEO",
     team: "Management",
-    status: "active",
+    level: "info",
     age: "29",
     avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
     email: "tony.reichert@example.com",
@@ -26,7 +27,7 @@ const users = [
     name: "Zoey Lang",
     role: "Technical Lead",
     team: "Development",
-    status: "paused",
+    level: "error",
     age: "25",
     avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
     email: "zoey.lang@example.com",
@@ -36,7 +37,7 @@ const users = [
     name: "Jane Fisher",
     role: "Senior Developer",
     team: "Development",
-    status: "active",
+    level: "info",
     age: "22",
     avatar: "https://i.pravatar.cc/150?u=a04258114e29026702d",
     email: "jane.fisher@example.com",
@@ -46,7 +47,7 @@ const users = [
     name: "William Howard",
     role: "Community Manager",
     team: "Marketing",
-    status: "vacation",
+    level: "danger",
     age: "28",
     avatar: "https://i.pravatar.cc/150?u=a048581f4e29026701d",
     email: "william.howard@example.com",
@@ -56,7 +57,7 @@ const users = [
     name: "Kristen Copper",
     role: "Sales Manager",
     team: "Sales",
-    status: "active",
+    level: "info",
     age: "24",
     avatar: "https://i.pravatar.cc/150?u=a092581d4ef9026700d",
     email: "kristen.cooper@example.com",
@@ -64,9 +65,9 @@ const users = [
 ];
 
 const statusColorMap = {
-  active: "success",
-  paused: "danger",
-  vacation: "warning",
+  info: "primary",
+  error: "danger",
+  danger: "warning",
 };
 
 export const LogsTable = () => {
@@ -91,9 +92,9 @@ export const LogsTable = () => {
             <p className="text-bold text-sm capitalize text-default-400">{user.team}</p>
           </div>
         );
-      case "status":
+      case "level":
         return (
-          <Chip className="capitalize" color={statusColorMap[user.status]} size="sm" variant="flat">
+          <Chip color={statusColorMap[user.level]} size="sm" variant="flat">
             {cellValue}
           </Chip>
         );
@@ -131,7 +132,7 @@ export const LogsTable = () => {
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody items={users}>
+      <TableBody items={logs}>
         {(item) => (
           <TableRow key={item.id}>
             {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
