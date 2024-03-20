@@ -35,10 +35,13 @@ export const LogDetailModal = ({ selectedLog, isOpen, onOpenChange }) => {
               />
             </ModalBody>
             <ModalFooter>
+              <Button color="primary" variant="light" onPress={() => {navigator.clipboard.writeText(JSON.stringify(selectedLog, null, 2))}}>
+                Copiar al portapapeles
+              </Button>
               <Button
                 color="primary"
                 variant="light"
-                onClick={() => exportData(selectedLog)}
+                onPress={() => exportData(selectedLog)}
               >
                 Exportar
               </Button>

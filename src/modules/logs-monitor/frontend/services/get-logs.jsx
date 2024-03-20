@@ -1,92 +1,38 @@
-export const getLogs = async () => {
-  const logs = [
-    {
-      id: 1,
-      host: 'localhost',
-      microserviceName: "INTEGRATIONS_WORKER",
-      orderReference: "20240319ER0",
-      customerReference: "09869765986987156087",
-      level: "info",
-      age: "29",
-      email: "tony.reichert@example.com",
-      message: "Order created successfully",
-      data: {},
-      errorData: {},
-      timestamp: new Date().toISOString(),
-    },
-    {
-      id: 2,
-      host: 'localhost',
-      microserviceName: "INTEGRATIONS_WORKER",
-      orderReference: "20240319ER0",
-      customerReference: "09869765986987156087",
-      level: "info",
-      age: "29",
-      email: "tony.reichert@example.com",
-      message: "Order created successfully",
-      data: {},
-      errorData: {},
-      timestamp: new Date().toISOString(),
-    },
-    {
-      id: 3,
-      host: 'localhost',
-      microserviceName: "INTEGRATIONS_WORKER",
-      orderReference: "20240319ER0",
-      customerReference: "09869765986987156087",
-      level: "error",
-      age: "29",
-      email: "tony.reichert@example.com",
-      message: "Order created successfully",
-      data: {},
-      errorData: {},
-      timestamp: new Date().toISOString(),
-    },
-    {
-      id: 4,
-      host: 'localhost',
-      microserviceName: "INTEGRATIONS_WORKER",
-      orderReference: "20240319ER0",
-      customerReference: "09869765986987156087",
-      level: "info",
-      age: "29",
-      email: "tony.reichert@example.com",
-      message: "Order created successfully",
-      data: {},
-      errorData: {},
-      timestamp: new Date().toISOString(),
-    },
-    {
-      id: 5,
-      host: 'localhost',
-      microserviceName: "INTEGRATIONS_REST",
-      orderReference: "20240319ER0",
-      customerReference: "09869765986987156087",
-      level: "info",
-      age: "29",
-      email: "tony.reichert@example.com",
-      message: "Order created successfully",
-      data: {},
-      errorData: {},
-      timestamp: new Date().toISOString(),
-    },
-    {
-      id: 6,
-      host: 'localhost',
-      microserviceName: "INTEGRATIONS_WORKER",
-      orderReference: "20240319ER0",
-      customerReference: "09869765986987156087",
-      level: "dangerous",
-      message: "Order created successfully",
-      data: {},
-      errorData: {},
-      timestamp: new Date().toISOString(),
-    },
-  ];
+import { APIFetcher } from "../../../shared/frontend/helpers/fetcher"
+import { config } from "../../../shared/constants/config";
+console.log({ config })
 
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(logs);
-    }, 1000);
-  });
+const fetcher = APIFetcher({
+  baseUrl: config.LOGS_API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+    token: 'token',
+  },
+});
+
+export const getLogs = async ({
+  microServiceName = 'INTEGRATIONS_WORKER',
+  customerReference,
+  orderReference,
+  level,
+}) => {
+  const criteriaMap = {
+    level,
+    microServiceName,
+    'data.customer_reference': customerReference,
+    'data.order_reference': orderReference,
+  }
+
+  const criteriaToQueryParams = (criteria) => {
+    const params = Object.keys(criteria).filter(key => !!criteria[key]) 
+
+    return params.map(key => {
+      return `${key}=${criteria[key]}`
+    }).join('&')
+  }
+
+  const queryParams = criteriaToQueryParams(criteriaMap)
+
+  const results = await fetcher.get(`log?${queryParams}`);
+  return results.data || [];
 }

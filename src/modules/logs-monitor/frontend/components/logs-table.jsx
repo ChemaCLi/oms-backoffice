@@ -17,10 +17,11 @@ import { FaEye } from "react-icons/fa";
 import { logsService } from "../services";
 
 const columns = [
-  { name: "Agente", uid: "microserviceName" },
+  { name: "Agente", uid: "microServiceName" },
   { name: "Order reference", uid: "orderReference" },
   { name: "Customer reference", uid: "customerReference" },
   { name: "Level", uid: "level" },
+  { name: "Mensaje", uid: "message" },
   { name: "Fecha", uid: "timestamp" },
   { name: "", uid: "actions" },
 ];
@@ -35,27 +36,23 @@ export const LogsTable = ({ onViewDetail }) => {
   const logsQuery = useService(logsService.getLogs);
   const [searchText, setSearchText] = React.useState("");
 
-  const filteredLogs = React.useMemo(() => {
-    if (!searchText) return logsQuery.data;
-
-    return logsQuery.data.filter((log) => {
-      const searchableString = Object.values(log).join(" ");
-      return searchableString.toLowerCase().includes(searchText.toLowerCase());
-    });
-  }, [logsQuery.data, searchText]);
+  console.log({ logsQuery });
 
   const renderCell = React.useCallback((log, columnKey) => {
+    console.log({ columnKey })
     const cellValue = log[columnKey];
 
     switch (columnKey) {
-      case "microserviceName":
+      case "microServiceName":
         return <p className="text-bold">{cellValue}</p>;
       case "orderReference":
-        return <p>{cellValue}</p>;
+        return <p>{log.data?.order_reference}</p>;
       case "customerReference":
-        return <p>{cellValue}</p>;
+        return <p>{log.data?.customer_reference}</p>;
       case "timestamp":
         return new Date(cellValue).toLocaleString();
+      case "message":
+        return <p>{log.message}</p>;
       case "level":
         return (
           <Chip color={statusColorMap[log.level]} size="sm" variant="flat">
@@ -110,10 +107,10 @@ export const LogsTable = ({ onViewDetail }) => {
             </div>
           }
           isLoading={logsQuery.loading}
-          items={filteredLogs || []}
+          items={logsQuery.data || []}
         >
           {(item) => (
-            <TableRow key={item.id}>
+            <TableRow key={item._id}>
               {(columnKey) => (
                 <TableCell>{renderCell(item, columnKey)}</TableCell>
               )}
