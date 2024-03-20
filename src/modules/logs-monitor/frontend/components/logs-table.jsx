@@ -1,100 +1,64 @@
 import React from "react";
-import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, User, Chip, Tooltip, getKeyValue} from "@nextui-org/react";
+import {
+  Table,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
+  Chip,
+  Tooltip,
+  CircularProgress,
+  Input,
+} from "@nextui-org/react";
+import { useService } from "../../../shared/frontend/hooks/use-service";
 
-import { FaEdit, FaRemoveFormat, FaEye } from "react-icons/fa";
+import { FaEye } from "react-icons/fa";
+import { logsService } from "../services";
 
 const columns = [
-  {name: "Agente", uid: "name"},
-  {name: "Order reference", uid: "role"},
-  {name: "Customer reference", uid: "role"},
-  {name: "Level", uid: "level"},
-  {name: "ACTIONS", uid: "actions"},
-];
-
-const logs = [
-  {
-    id: 1,
-    name: "Tony Reichert",
-    role: "CEO",
-    team: "Management",
-    level: "info",
-    age: "29",
-    avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-    email: "tony.reichert@example.com",
-  },
-  {
-    id: 2,
-    name: "Zoey Lang",
-    role: "Technical Lead",
-    team: "Development",
-    level: "error",
-    age: "25",
-    avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
-    email: "zoey.lang@example.com",
-  },
-  {
-    id: 3,
-    name: "Jane Fisher",
-    role: "Senior Developer",
-    team: "Development",
-    level: "info",
-    age: "22",
-    avatar: "https://i.pravatar.cc/150?u=a04258114e29026702d",
-    email: "jane.fisher@example.com",
-  },
-  {
-    id: 4,
-    name: "William Howard",
-    role: "Community Manager",
-    team: "Marketing",
-    level: "danger",
-    age: "28",
-    avatar: "https://i.pravatar.cc/150?u=a048581f4e29026701d",
-    email: "william.howard@example.com",
-  },
-  {
-    id: 5,
-    name: "Kristen Copper",
-    role: "Sales Manager",
-    team: "Sales",
-    level: "info",
-    age: "24",
-    avatar: "https://i.pravatar.cc/150?u=a092581d4ef9026700d",
-    email: "kristen.cooper@example.com",
-  },
+  { name: "Agente", uid: "microserviceName" },
+  { name: "Order reference", uid: "orderReference" },
+  { name: "Customer reference", uid: "customerReference" },
+  { name: "Level", uid: "level" },
+  { name: "Fecha", uid: "timestamp" },
+  { name: "", uid: "actions" },
 ];
 
 const statusColorMap = {
   info: "primary",
   error: "danger",
-  danger: "warning",
+  dangerous: "warning",
 };
 
 export const LogsTable = () => {
-  const renderCell = React.useCallback((user, columnKey) => {
-    const cellValue = user[columnKey];
+  const logsQuery = useService(logsService.getLogs);
+  const [searchText, setSearchText] = React.useState("");
+
+  const filteredLogs = React.useMemo(() => {
+    if (!searchText) return logsQuery.data;
+
+    return logsQuery.data.filter((log) => {
+      const searchableString = Object.values(log).join(" ");
+      return searchableString.toLowerCase().includes(searchText.toLowerCase());
+    });
+  }, [logsQuery.data, searchText]);
+
+  const renderCell = React.useCallback((log, columnKey) => {
+    const cellValue = log[columnKey];
 
     switch (columnKey) {
-      case "name":
-        return (
-          <User
-            avatarProps={{radius: "lg", src: user.avatar}}
-            description={user.email}
-            name={cellValue}
-          >
-            {user.email}
-          </User>
-        );
-      case "role":
-        return (
-          <div className="flex flex-col">
-            <p className="text-bold text-sm capitalize">{cellValue}</p>
-            <p className="text-bold text-sm capitalize text-default-400">{user.team}</p>
-          </div>
-        );
+      case "microserviceName":
+        return <p className="text-bold">{cellValue}</p>;
+      case "orderReference":
+        return <p>{cellValue}</p>;
+      case "customerReference":
+        return <p>{cellValue}</p>;
+      case "timestamp":
+        return new Date(cellValue).toLocaleString();
       case "level":
         return (
-          <Chip color={statusColorMap[user.level]} size="sm" variant="flat">
+          <Chip color={statusColorMap[log.level]} size="sm" variant="flat">
             {cellValue}
           </Chip>
         );
@@ -106,16 +70,6 @@ export const LogsTable = () => {
                 <FaEye />
               </span>
             </Tooltip>
-            <Tooltip content="Edit user">
-              <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                <FaEdit />
-              </span>
-            </Tooltip>
-            <Tooltip color="danger" content="Delete user">
-              <span className="text-lg text-danger cursor-pointer active:opacity-50">
-                <FaRemoveFormat />
-              </span>
-            </Tooltip>
           </div>
         );
       default:
@@ -124,21 +78,49 @@ export const LogsTable = () => {
   }, []);
 
   return (
-  <Table aria-label="Example table with custom cells">
-      <TableHeader columns={columns}>
-        {(column) => (
-          <TableColumn key={column.uid} align={column.uid === "actions" ? "center" : "start"}>
-            {column.name}
-          </TableColumn>
-        )}
-      </TableHeader>
-      <TableBody items={logs}>
-        {(item) => (
-          <TableRow key={item.id}>
-            {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
+    <div className="flex flex-col gap-4">
+      <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
+        <Input
+          type="text"
+          label="Buscar"
+          onChange={(e) => setSearchText(e.target.value)}
+          placeholder="Ingresa un criterio de búsqueda"
+        />
+      </div>
+      <Table
+        aria-label="Logs table"
+        classNames={{
+          table: "min-h-[400px]",
+        }}
+      >
+        <TableHeader columns={columns}>
+          {(column) => (
+            <TableColumn
+              key={column.uid}
+              align={column.uid === "actions" ? "center" : "start"}
+            >
+              {column.name}
+            </TableColumn>
+          )}
+        </TableHeader>
+        <TableBody
+          loadingContent={
+            <div className="flex gap-4 display-block">
+              <CircularProgress size="lg" aria-label="Loading..." />
+            </div>
+          }
+          isLoading={logsQuery.loading}
+          items={filteredLogs || []}
+        >
+          {(item) => (
+            <TableRow key={item.id}>
+              {(columnKey) => (
+                <TableCell>{renderCell(item, columnKey)}</TableCell>
+              )}
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </div>
   );
-}
+};
