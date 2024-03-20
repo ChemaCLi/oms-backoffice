@@ -89,7 +89,7 @@ export const Layout = ({ children, title, breadcrumbs = [] }) => {
             </header>
 
             {/* Main Content Area */}
-            <main className="p-4">{children}</main>
+            <main className="p-4 overflow-y-auto">{children}</main>
           </div>
         </div>
       </main>
