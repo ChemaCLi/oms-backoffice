@@ -31,7 +31,7 @@ const statusColorMap = {
   dangerous: "warning",
 };
 
-export const LogsTable = () => {
+export const LogsTable = ({ onViewDetail }) => {
   const logsQuery = useService(logsService.getLogs);
   const [searchText, setSearchText] = React.useState("");
 
@@ -65,8 +65,8 @@ export const LogsTable = () => {
       case "actions":
         return (
           <div className="relative flex items-center gap-2">
-            <Tooltip content="Details">
-              <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+            <Tooltip content="Detalles">
+              <span className="text-lg text-default-400 cursor-pointer active:opacity-50" onClick={() => onViewDetail(log)}>
                 <FaEye />
               </span>
             </Tooltip>
