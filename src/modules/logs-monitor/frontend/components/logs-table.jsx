@@ -27,11 +27,40 @@ const columns = [
 
 export const LogsTable = ({ onViewDetail }) => {
   const logsQuery = useService(logsService.getLogs, { args: {} });
-  const [searchText, setSearchText] = React.useState("");
+  
+  const [filteredResults, setFilteredResults] = React.useState([]);
+
+  React.useEffect(() => {
+    if (logsQuery.data) {
+      setFilteredResults(logsQuery.data || []);
+    }
+  }
+  , [logsQuery.data]);
+
+  const onLocalSearch = (searchText) => {
+    console.log(searchText)
+    if (!searchText) {
+      setFilteredResults(logsQuery.data || []);
+      return;
+    }
+
+    const filtered = filteredResults.filter((log) => {
+      const searchableString = `${log.microServiceName} ${log.order_reference} ${log.customer_reference} ${log.level} ${log.message} ${log.timestamp}`;
+      return searchableString.toLowerCase().includes(searchText.toLowerCase());
+    });
+
+    console.log(filtered)
+
+    setFilteredResults(filtered);
+  };
+
+  const queryLogs = (logsQueryParams) => {
+    logsQuery.refetch(logsQueryParams);
+  }
 
   return (
     <div className="flex flex-col gap-4">
-      <LogsTableFilters />
+      <LogsTableFilters onLocalSearch={onLocalSearch} queryLogs={queryLogs} />
       <Table
         aria-label="Logs table"
         classNames={{
@@ -55,7 +84,7 @@ export const LogsTable = ({ onViewDetail }) => {
             </div>
           }
           isLoading={logsQuery.loading}
-          items={logsQuery.data || []}
+          items={filteredResults || []}
         >
           {(item) => (
             <TableRow key={item._id}>
