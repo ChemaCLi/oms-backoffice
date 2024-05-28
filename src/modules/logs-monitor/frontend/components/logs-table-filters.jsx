@@ -8,16 +8,22 @@ import lodash from "lodash";
 
 export const LogsTableFilters = ({ queryLogs, onLocalSearch }) => {
   const [logsQueryParams, setLogsQueryParams] = React.useState({
-    microServiceName: "",
-    customerReference: "",
-    orderReference: "",
-    correlationId: "",
+    microServiceName: [],
+    customerReference: [],
+    orderReference: [],
+    correlationId: [],
   });
 
   const handleInputChange = (inputArgs) => {
-    setLogsQueryParams({
-      ...logsQueryParams,
-      ...inputArgs,
+    const [key, value] = Object.entries(inputArgs)[0];
+    const commaSeparatedValues = (value || '').split(',').map((v) => v.trim());
+
+    setLogsQueryParams((prev) => {
+      const updatedFilter = commaSeparatedValues;
+      return {
+        ...prev,
+        [key]: updatedFilter,
+      };
     });
   }
 

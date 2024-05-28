@@ -10,30 +10,22 @@ const fetcher = APIFetcher({
 });
 
 export const getLogs = async ({
-  microServiceName,
-  customerReference,
-  orderReference,
-  correlationId,
-  level,
+  microServiceName = [],
+  customerReference = [],
+  orderReference = [],
+  correlationId = [],
+  level = [],
 }) => {
+  const valOrUndefined = (val) => val.length ? val : undefined;
+
   const criteriaMap = {
-    level,
-    microServiceName,
-    customer_reference: customerReference,
-    order_reference: orderReference,
-    correlationId,
+    level: valOrUndefined(level),
+    microServiceName: valOrUndefined(microServiceName),
+    customer_reference: valOrUndefined(customerReference),
+    order_reference: valOrUndefined(orderReference),
+    correlationId: valOrUndefined(correlationId),
   }
+  const results = await fetcher.post(`/get-logs`, criteriaMap);
 
-  const criteriaToQueryParams = (criteria) => {
-    const params = Object.keys(criteria).filter(key => !!criteria[key]) 
-
-    return params.map(key => {
-      return `${key}=${criteria[key]}`
-    }).join('&')
-  }
-
-  const queryParams = criteriaToQueryParams(criteriaMap)
-
-  const results = await fetcher.get(`log?${queryParams}`);
   return results.data || [];
 }
