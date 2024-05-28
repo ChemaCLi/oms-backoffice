@@ -10,7 +10,7 @@ const statusColorMap = {
   dangerous: "warning",
 };
 
-export const renderCell = (log, columnKey) => {
+export const renderCell = ({ log, columnKey, onViewDetail }) => {
   const cellValue = log[columnKey];
 
   switch (columnKey) {
@@ -20,6 +20,8 @@ export const renderCell = (log, columnKey) => {
       return <p className="text-nowrap">{log?.order_reference}</p>;
     case "customerReference":
       return <p className="text-nowrap">{log?.customer_reference}</p>;
+    case "correlationId":
+      return <p className="text-nowrap">{log?.correlationId}</p>;
     case "timestamp":
       return new Date(cellValue).toLocaleString();
     case "message":
@@ -34,7 +36,9 @@ export const renderCell = (log, columnKey) => {
       return (
         <div className="relative flex items-center gap-2">
           <Tooltip content="Detalles">
-            <span className="text-lg text-default-400 cursor-pointer active:opacity-50" onClick={() => onViewDetail(log)}>
+            <span
+              className="text-lg text-default-400 cursor-pointer active:opacity-50"
+              onClick={() => onViewDetail(log)}>
               <FaEye />
             </span>
           </Tooltip>

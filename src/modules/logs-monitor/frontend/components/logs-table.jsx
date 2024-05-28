@@ -15,10 +15,11 @@ import { LogsTableFilters } from "./logs-table-filters";
 import { renderCell } from "./render-cell";
 
 const columns = [
-  { name: "Agente", uid: "microServiceName" },
-  { name: "Order reference", uid: "orderReference" },
-  { name: "Customer reference", uid: "customerReference" },
   { name: "Level", uid: "level" },
+  { name: "Agente", uid: "microServiceName" },
+  { name: "Order reference", uid: "order_reference" },
+  { name: "Customer reference", uid: "customer_reference" },
+  { name: "Correlation ID", uid: 'correlationId' },
   { name: "Mensaje", uid: "message" },
   { name: "Fecha", uid: "timestamp" },
   { name: "", uid: "actions" },
@@ -38,7 +39,6 @@ export const LogsTable = ({ onViewDetail }) => {
   , [logsQuery.data]);
 
   const onLocalSearch = (searchText) => {
-    console.log(searchText)
     if (!searchText) {
       setFilteredResults(logsQuery.data || []);
       return;
@@ -48,8 +48,6 @@ export const LogsTable = ({ onViewDetail }) => {
       const searchableString = `${log.microServiceName} ${log.order_reference} ${log.customer_reference} ${log.level} ${log.message} ${log.timestamp}`;
       return searchableString.toLowerCase().includes(searchText.toLowerCase());
     });
-
-    console.log(filtered)
 
     setFilteredResults(filtered);
   };
@@ -87,9 +85,9 @@ export const LogsTable = ({ onViewDetail }) => {
           items={filteredResults || []}
         >
           {(item) => (
-            <TableRow key={item._id}>
+            <TableRow key={item._id} className="hover:bg-cyan-950">
               {(columnKey) => (
-                <TableCell>{renderCell(item, columnKey)}</TableCell>
+                <TableCell>{renderCell({ log: item, columnKey, onViewDetail })}</TableCell>
               )}
             </TableRow>
           )}
