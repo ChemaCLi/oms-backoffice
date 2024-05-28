@@ -16,7 +16,7 @@ export const LogDetailModal = ({ selectedLog, isOpen, onOpenChange }) => {
     )}`;
     const link = document.createElement("a");
     link.href = jsonString;
-    link.download = `log-${selectedLog.orderReference}.json`;
+    link.download = `log-${selectedLog.order_reference || selectedLog._id}.json`;
 
     link.click();
   };
@@ -27,7 +27,7 @@ export const LogDetailModal = ({ selectedLog, isOpen, onOpenChange }) => {
         {(onClose) => (
           <>
             <ModalHeader className="text-slate-100">Vista RAW</ModalHeader>
-            <ModalBody>
+            <ModalBody className="max-h-[400px] overflow-x-auto overflow-y-auto">
               <JsonView
                 data={selectedLog}
                 shouldExpandNode={allExpanded}
