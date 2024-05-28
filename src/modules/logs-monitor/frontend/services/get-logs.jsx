@@ -1,6 +1,5 @@
 import { APIFetcher } from "../../../shared/frontend/helpers/fetcher"
 import { config } from "../../../shared/constants/config";
-console.log({ config })
 
 const fetcher = APIFetcher({
   baseUrl: config.LOGS_API_URL,
@@ -11,7 +10,7 @@ const fetcher = APIFetcher({
 });
 
 export const getLogs = async ({
-  microServiceName = 'INTEGRATIONS_WORKER',
+  microServiceName,
   customerReference,
   orderReference,
   correlationId,
@@ -22,7 +21,7 @@ export const getLogs = async ({
     microServiceName,
     customer_reference: customerReference,
     order_reference: orderReference,
-    correlation_id: correlationId,
+    correlationId,
   }
 
   const criteriaToQueryParams = (criteria) => {
