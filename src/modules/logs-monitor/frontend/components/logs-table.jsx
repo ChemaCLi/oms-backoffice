@@ -31,16 +31,22 @@ export const LogsTable = ({ onViewDetail }) => {
   
   const [filteredResults, setFilteredResults] = React.useState([]);
 
+  const sortLogsByTimestamp = (data) => {
+    return data.sort((a, b) => {
+      return new Date(b.timestamp) - new Date(a.timestamp);
+    });
+  }
+
   React.useEffect(() => {
     if (logsQuery.data) {
-      setFilteredResults(logsQuery.data || []);
+      setFilteredResults(sortLogsByTimestamp(logsQuery.data || []));
     }
   }
   , [logsQuery.data]);
 
   const onLocalSearch = (searchText) => {
     if (!searchText) {
-      setFilteredResults(logsQuery.data || []);
+      setFilteredResults(sortLogsByTimestamp(logsQuery.data || []));
       return;
     }
 
@@ -49,7 +55,7 @@ export const LogsTable = ({ onViewDetail }) => {
       return searchableString.toLowerCase().includes(searchText.toLowerCase());
     });
 
-    setFilteredResults(filtered);
+    setFilteredResults(sortLogsByTimestamp(filtered));
   };
 
   const queryLogs = (logsQueryParams) => {

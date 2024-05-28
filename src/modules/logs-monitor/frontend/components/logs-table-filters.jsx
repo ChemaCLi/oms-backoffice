@@ -25,6 +25,10 @@ export const LogsTableFilters = ({ queryLogs, onLocalSearch }) => {
     queryLogs(logsQueryParams);
   }
 
+  const onEnter = () => {
+    queryLogs(logsQueryParams);
+  }
+
   const debouncedSearch = lodash.debounce((searchText) => {
     onLocalSearch && onLocalSearch(searchText);
   }
@@ -34,13 +38,18 @@ export const LogsTableFilters = ({ queryLogs, onLocalSearch }) => {
     <>
       <div className="flex gap-4">
         <div className="flex-1">
-          <AgentsInput onChange={microServiceName => handleInputChange({ microServiceName })} />
+          <AgentsInput
+            onEnter={onEnter}
+            onChange={microServiceName => handleInputChange({ microServiceName })} />
         </div>
         <div className="flex-1">
           <Input
             bordered
             placeholder="Order reference"
             onChange={e => handleInputChange({ orderReference: e.target.value })}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') onEnter && onEnter();
+            }}
           />
         </div>
         <div className="flex-1">
@@ -48,6 +57,9 @@ export const LogsTableFilters = ({ queryLogs, onLocalSearch }) => {
             bordered
             placeholder="Customer reference"
             onChange={e => handleInputChange({ customerReference: e.target.value })}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') onEnter && onEnter();
+            }}
           />
         </div>
         <div className="flex-1">
@@ -55,6 +67,9 @@ export const LogsTableFilters = ({ queryLogs, onLocalSearch }) => {
             bordered
             placeholder="Correlation ID"
             onChange={e => handleInputChange({ correlationId: e.target.value })}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') onEnter && onEnter();
+            }}
           />
         </div>
         <div>

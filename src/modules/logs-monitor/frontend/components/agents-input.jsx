@@ -1,7 +1,7 @@
 import { Input } from '@nextui-org/react';
 import React, { useState } from 'react';
 
-export const AgentsInput = ({ onChange }) => {
+export const AgentsInput = ({ onChange, onEnter }) => {
   const suggestions = [
     { value: "INTEGRATIONS_WORKER", label: "INTEGRATIONS_WORKER" },
     { value: "INTEGRATIONS_REST", label: "INTEGRATIONS_REST" },
@@ -53,6 +53,11 @@ export const AgentsInput = ({ onChange }) => {
         bordered
         value={inputValue}
         onChange={handleChange}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            onEnter && onEnter(inputValue);
+          }
+        }}
         placeholder="Agente"
       />
       
