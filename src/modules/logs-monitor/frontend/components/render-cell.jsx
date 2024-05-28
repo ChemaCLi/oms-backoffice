@@ -16,16 +16,20 @@ export const renderCell = ({ log, columnKey, onViewDetail }) => {
   switch (columnKey) {
     case "microServiceName":
       return <p className="text-bold text-nowrap">{cellValue}</p>;
-    case "orderReference":
+    case "order_reference":
       return <p className="text-nowrap">{log?.order_reference}</p>;
-    case "customerReference":
+    case "customer_reference":
       return <p className="text-nowrap">{log?.customer_reference}</p>;
     case "correlationId":
       return <p className="text-nowrap">{log?.correlationId}</p>;
     case "timestamp":
       return new Date(cellValue).toLocaleString();
     case "message":
-      return <p>{log.message}</p>;
+      return <p style={{
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        whiteSpace: "nowrap",
+      }}>{log.message}</p>;
     case "level":
       return (
         <Chip color={statusColorMap[log.level]} size="sm" variant="flat">

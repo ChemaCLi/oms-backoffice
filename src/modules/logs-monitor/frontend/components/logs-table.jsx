@@ -68,7 +68,7 @@ export const LogsTable = ({ onViewDetail }) => {
       <Table
         aria-label="Logs table"
         classNames={{
-          table: "min-h-[400px] overflow-x-auto",
+          table: "min-h-[100px] overflow-x-auto",
         }}
       >
         <TableHeader columns={columns}>
