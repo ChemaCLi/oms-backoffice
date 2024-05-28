@@ -14,13 +14,15 @@ export const getLogs = async ({
   microServiceName = 'INTEGRATIONS_WORKER',
   customerReference,
   orderReference,
+  correlationId,
   level,
 }) => {
   const criteriaMap = {
     level,
     microServiceName,
-    'data.customer_reference': customerReference,
-    'data.order_reference': orderReference,
+    customer_reference: customerReference,
+    order_reference: orderReference,
+    correlation_id: correlationId,
   }
 
   const criteriaToQueryParams = (criteria) => {
