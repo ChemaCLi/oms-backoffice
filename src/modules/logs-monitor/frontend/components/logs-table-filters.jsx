@@ -64,9 +64,8 @@ export const LogsTableFilters = ({ queryLogs, onLocalSearch }) => {
       <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
         <Input
           type="text"
-          label="Buscar"
           onChange={(e) => debouncedSearch(e.target.value)}
-          placeholder="Ingresa un criterio de búsqueda"
+          placeholder="Buscar en los resultados..."
         />
       </div>
     </>

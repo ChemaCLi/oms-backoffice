@@ -21,7 +21,10 @@ export const LogsTablePage = () => {
         { label: 'Home', href: '/' },
         { label: 'Logs', href: '/logs-monitor' },
       ]}>
-      <LogDetailModal selectedLog={selectedLog} isOpen={isOpen} onOpenChange={onOpenChange} />
+      <LogDetailModal
+        isOpen={isOpen}
+        selectedLog={selectedLog}
+        onOpenChange={onOpenChange} />
       <LogsTable onViewDetail={(selectedLog) => {
         setSelectedLog(selectedLog)
         onOpen()
