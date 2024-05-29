@@ -16,7 +16,10 @@ export const LogsTableFilters = ({ queryLogs, onLocalSearch }) => {
 
   const handleInputChange = (inputArgs) => {
     const [key, value] = Object.entries(inputArgs)[0];
-    const commaSeparatedValues = (value || '').split(',').map((v) => v.trim());
+    const commaSeparatedValues = (value || '')
+      .split(',') // convert to array
+      .map((v) => v.trim()) // remove leading/trailing spaces
+      .filter((v) => !!v); // remove empty strings
 
     setLogsQueryParams((prev) => {
       const updatedFilter = commaSeparatedValues;
